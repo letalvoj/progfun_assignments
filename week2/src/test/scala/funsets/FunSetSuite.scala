@@ -4,47 +4,10 @@ import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 
-/**
-  * This class is a test suite for the methods in object FunSets. To run
-  * the test suite, you can either:
-  * - run the "test" command in the SBT console
-  * - right-click the file in eclipse and chose "Run As" - "JUnit Test"
-  */
+import scala.collection.immutable
+
 @RunWith(classOf[JUnitRunner])
 class FunSetSuite extends FunSuite {
-
-  /**
-    * Link to the scaladoc - very clear and detailed tutorial of FunSuite
-    *
-    * http://doc.scalatest.org/1.9.1/index.html#org.scalatest.FunSuite
-    *
-    * Operators
-    * - test
-    * - ignore
-    * - pending
-    */
-
-  /**
-    * Tests are written using the "test" operator and the "assert" method.
-    */
-  // test("string take") {
-  //   val message = "hello, world"
-  //   assert(message.take(5) == "hello")
-  // }
-
-  /**
-    * For ScalaTest tests, there exists a special equality operator "===" that
-    * can be used inside "assert". If the assertion fails, the two values will
-    * be printed in the error message. Otherwise, when using "==", the test
-    * error message will only say "assertion failed", without showing the values.
-    *
-    * Try it out! Change the values so that the assertion fails, and look at the
-    * error message.
-    */
-  // test("adding ints") {
-  //   assert(1 + 2 === 3)
-  // }
-
 
   import FunSets._
 
@@ -108,5 +71,51 @@ class FunSetSuite extends FunSuite {
     }
   }
 
+  test("intersection") {
+    new TestSets {
+      val l1 = (a: Int) => a % 2 == 0
+      val l2 = (a: Int) => immutable.Set(1, 2, 3, 4, 5) contains a
+      val s = intersect(l1, l2)
+
+      FunSets.printSet(s)
+    }
+  }
+
+  test("forall") {
+    new TestSets {
+      val yes = (a: Int) => immutable.Set(2, 4, 6, 8, 10) contains a
+      val no = (a: Int) => immutable.Set(3, 4, 5) contains a
+      val even = (a: Int) => a % 2 == 0
+
+      assert(FunSets.forall(yes, even), "All even")
+      assert(!FunSets.forall(no, even), "Some odd")
+    }
+  }
+
+  test("exists") {
+    new TestSets {
+      val yes = (a: Int) => immutable.Set(1, 2) contains a
+      val no = (a: Int) => immutable.Set(1, 3, 5, 7) contains a
+      val even = (a: Int) => a % 2 == 0
+
+      assert(FunSets.exists(yes, even), "One even")
+      assert(!FunSets.exists(no, even), "All odd")
+    }
+  }
+
+  test("map") {
+    new TestSets {
+      val original = (a: Int) => immutable.Set(1, 6, 10) contains a
+      val shifted = FunSets.map(original, a => a - 1)
+
+      assert(shifted(0), "0")
+      assert(shifted(5), "5")
+      assert(shifted(9), "9")
+
+      assert(!shifted(1), "1")
+      assert(!shifted(6), "6")
+      assert(!shifted(10), "10")
+    }
+  }
 
 }
