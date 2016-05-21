@@ -1,9 +1,9 @@
+### Scala template
 *.class
 *.log
 
 # sbt specific
 .cache
-.history
 .lib/
 dist/*
 target/
@@ -15,3 +15,4 @@ project/plugins/project/
 # Scala-IDE specific
 .scala_dependencies
 .worksheet
+.idea/
