@@ -20,8 +20,9 @@ lazy val week2 = configure(project.in(file("week2")))
 lazy val week3 = configure(project.in(file("week3")))
   .settings(libraryDependencies += "org.scala-lang" % "scala-parser-combinators" % "2.11.0-M4")
 lazy val week4 = configure(project.in(file("week4")))
+lazy val week6 = configure(project.in(file("week6")))
 
-lazy val root = project.in(file(".")).aggregate(week1, week2, week3, week4)
+lazy val root = project.in(file(".")).aggregate(week1, week2, week3, week4, week6)
 
 
 
