@@ -1,5 +1,7 @@
 package forcomp
 
+import scala.io.Source
+
 object Anagrams {
 
   /** A word is simply a `String`. */
@@ -24,7 +26,14 @@ object Anagrams {
   /** The dictionary is simply a sequence of words.
     * It is predefined and obtained as a sequence using the utility method `loadDictionary`.
     */
-  val dictionary: List[Word] = loadDictionary
+
+  def loadFile(path: String): List[Word] =
+    Source.fromFile(path)
+      .getLines()
+      .map(_.toLowerCase.filter(_.isLetter))
+      .toList
+
+  val dictionary: List[Word] = loadFile("/usr/share/dict/words")
 
   /** Converts the word into its character occurrence list.
     *
