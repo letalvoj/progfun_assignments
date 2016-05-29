@@ -1,14 +1,11 @@
 package streams
 
-import org.scalatest.FunSuite
-
 import org.junit.runner.RunWith
+import org.scalatest._
 import org.scalatest.junit.JUnitRunner
 
-import Bloxorz._
-
 @RunWith(classOf[JUnitRunner])
-class BloxorzSuite extends FunSuite {
+class BloxorzSuite extends FunSuite with ShouldMatchers {
 
   trait SolutionChecker extends GameDef with Solver with StringParserTerrain {
     /**
@@ -73,6 +70,37 @@ class BloxorzSuite extends FunSuite {
 	test("optimal solution length for level 1") {
     new Level1 {
       assert(solution.length == optsolution.length)
+    }
+  }
+
+  test("neighborsWithHistory valid neighbours") {
+    new Level1 {
+      val expected = neighborsWithHistory(Block(Pos(1, 1), Pos(1, 1)), List(Left, Up)).toSet
+      val actual = Set(
+        (Block(Pos(1, 2), Pos(1, 3)), List(Right, Left, Up)),
+        (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))
+      )
+
+      expected shouldBe actual
+    }
+  }
+
+  test("newNeighborsOnly does not loop") {
+    new Level1 {
+      val expected = newNeighborsOnly(
+        Set(
+          (Block(Pos(1, 2), Pos(1, 3)), List(Right, Left, Up)),
+          (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))
+        ).toStream,
+
+        Set(Block(Pos(1, 2), Pos(1, 3)), Block(Pos(1, 1), Pos(1, 1)))
+      )
+
+      val actual = Set(
+        (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))
+      ).toStream
+
+      expected shouldBe actual
     }
   }
 

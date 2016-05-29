@@ -1,12 +1,10 @@
 package streams
 
-import common._
-
 /**
  * This trait represents the layout and building blocks of the game
  *
- * @TODO: SHOULD RENAME `x` and `y` in class Pos to `row` and `col`. It's
- * confusing to have `x` being the vertical axis.
+  * TODO: SHOULD RENAME `x` and `y` in class Pos to `row` and `col`. It's
+  * confusing to have `x` being the vertical axis.
  */
 trait GameDef {
 
@@ -20,13 +18,12 @@ trait GameDef {
    *
    * Illustration:
    *
-   *     0 1 2 3   <- y axis
+    * 0 1 2 3   - y axis
    *   0 o o o o
    *   1 o o o o
    *   2 o # o o    # is at position Pos(2, 1)
    *   3 o o o o
    *
-   *   ^
    *   |
    *
    *   x axis
@@ -80,11 +77,13 @@ trait GameDef {
   case object Up    extends Move
   case object Down  extends Move
 
+  val moves: List[Move] = List(Left, Right, Up, Down)
+
   /**
-   * This function returns the block at the start position of
-   * the game.
-   */
-  def startBlock: Block = ???
+    * This function returns the block at the start position of
+    * the game.
+    */
+  def startBlock: Block = Block(startPos, startPos)
 
 
   /**
@@ -130,27 +129,40 @@ trait GameDef {
                else if (b1.x == b2.x)  dx(1, 1)
                else                    dx(2, 1)
 
+    /**
+      * This method made applying moved more convenient.
+      */
+    def apply(move: Move): Block = {
+      move match {
+        case Left => left
+        case Right => right
+        case Up => up
+        case Down => down
+      }
+    }
 
     /**
      * Returns the list of blocks that can be obtained by moving
      * the current block, together with the corresponding move.
      */
-    def neighbors: List[(Block, Move)] = ???
+    def neighbors: List[(Block, Move)] = moves.map(m => (apply(m), m))
 
     /**
      * Returns the list of positions reachable from the current block
      * which are inside the terrain.
      */
-    def legalNeighbors: List[(Block, Move)] = ???
+    def legalNeighbors: List[(Block, Move)] = neighbors.filter {
+      case (block: Block, _) => block.isLegal
+    }
 
     /**
      * Returns `true` if the block is standing.
      */
-    def isStanding: Boolean = ???
+    def isStanding: Boolean = b1 == b2
 
     /**
      * Returns `true` if the block is entirely inside the terrain.
      */
-    def isLegal: Boolean = ???
+    def isLegal: Boolean = terrain(b1) && terrain(b2)
   }
 }
